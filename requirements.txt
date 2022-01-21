@@ -1,3 +1,4 @@
+-f https://download.pytorch.org/whl/torch_stable.html
 absl-py==0.14.1
 argon2-cffi==21.1.0
 astunparse==1.6.3
@@ -122,8 +123,8 @@ terminado==0.12.1
 testpath==0.5.0
 thinc==8.0.10
 threadpoolctl==3.0.0
-torch==1.9.1
-torchvision==0.10.1
+torch==1.9.1+cpu
+torchvision==0.10.1+cpu
 tornado==6.1
 tqdm==4.62.3
 traitlets==4.3.3

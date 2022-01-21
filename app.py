@@ -365,30 +365,7 @@ def pricecal(price,trashtype):
     price = (data[0]-data[6])/data[6]
     return price
   
-#ngrok
-def log_event_callback(log):
-  print(str(log))
 
-# Open a HTTP tunnel on the port 5000
-# <NgrokTunnel: "http://<public_sub>.ngrok.io" -> "http://localhost:5000">
-http_tunnel = ngrok.connect(5000)
-print(http_tunnel)
-
-#SetWebHookLine
-def setWebhook(endpoint,CHANNEL_ACCESS_TOKEN):
-  endpointFixed = "https://" + endpoint.split('//')[-1] + '/callback'
-  url = "https://api.line.me/v2/bot/channel/webhook/endpoint"
-  header = {'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN}
-  body = json.dumps({'endpoint': endpointFixed})
-  response = requests.put(url=url, data=body, headers=header)
-  print(response)
-  obj = json.loads(response.text)
-  print(obj)
-
-setWebhook(http_tunnel.public_url, channelAccessToken)
-
-conf.get_default().log_event_callback = log_event_callback
 
 if __name__ == '__main__':
     app.run()

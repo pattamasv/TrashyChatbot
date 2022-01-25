@@ -79,7 +79,7 @@ def handle_post(event:PostbackEvent)-> None : # echo function
 @handler.add(MessageEvent, message=(LocationMessage,ImageMessage,TextMessage))
 def handle_message(event: MessageEvent)-> None : # echo function
         #Text
-        greeting = ['สวัสดีค่ะ','สวัสดีครับ','สวัสดี','ตู้รีฟัน']
+        greeting = ['สวัสดีค่ะ','สวัสดีครับ','สวัสดี']
         howtouse = ['Trashy Chatbot ทำอะไรได้บ้าง','ทำอะไรได้บ้าง','ทำไรได้บ้าง','ใช้ยังไง','ต้องทำยังไง','ขั้นตอนการใช้งาน','วิธีใช้','ขอวิธีใช้หน่อย','วิธีใช้งาน','ต้องทำอะไรบ้าง']
         end = ['ขอบคุณ','ขอบคุณค่ะ','ขอบคุณครับ','เอาไว้ก่อน','ยังไม่ต้องการขาย']
         yes = ['ต้องการขาย','พิกัดใกล้ฉัน','ต้องการสะสมแต้มหรือขาย']
@@ -102,8 +102,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
 
             for h in howtouse:
                 if (h == event.message.text ):
-                    t1 = '1.ผู้ใช้ส่งรูปขยะเพื่อให้ Trashy Chatbot ช่วยวิเคราะห์และให้คำแนะนำการทิ้งและการขาย'
-                    t2 = '2.ผู้ใช้ส่งโลเคชันเพื่อให้ Trashy Chatbot ช่วยหาสถานที่รับซื้อขยะของวงษ์พาณิชย์และตู้รีฟันที่ใกล้ที่สุด'
+                    t1 = '1.ถ่ายรูปขยะที่ต้องการทิ้ง ส่งไปยังแทรชชี่แชทบอท (โดยพยายามถ่ายให้พื้นหลังรูปขยะเป็นสีขาว) เพื่อให้แทรชชี่แนะนำการจัดการกับขยะประเภทนั้นๆ'
+                    t2 = '2.ส่งตำแหน่งที่ตั้งปัจจุบันของผู้ใช้ไปยังแทรชชี่แชทบอท เพื่อให้แทรชชี่แนะนำสถานที่รับซื้อขยะรีไซเคิลที่อยู่ใกล้กับผู้ใช้'
                     line_bot_api.reply_message(event.reply_token, [TextSendMessage( text=t1+'\n'+t2,
                             quick_reply=QuickReply(
                                 items=[
@@ -234,7 +234,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 bin = 'ถังขยะสีแดง'
                 url = 'https://www.img.in.th/images/4fe2a116e8323985bd4a86ace49ddd07.jpg'
                 app.logger.info("url=" + url)
-                reply1 = 'ประเภทขยะของคุณคือ %s %s ควรทิ้งใน%s'%(trashtype,prob,bin)
+                reply1 = 'ประเภทขยะของคุณคือ %s ควรทิ้งใน%s'%(trashtype,bin)
                 res = [TextSendMessage(text=reply1), ImageSendMessage(url, url,
                             quick_reply=QuickReply(
                                 items=[

@@ -19,6 +19,8 @@ import numpy as np
 from models import db,users
 import time
 from config import Config
+from datetime import datetime, timezone, timedelta
+
 
 path = './'
 learn = load_learner(path, 'export.pkl')
@@ -226,8 +228,14 @@ def handle_message(event: MessageEvent)-> None : # echo function
 
             profile = line_bot_api.get_profile(event.source.user_id)
 
-            named_tuple = time.localtime() # get struct_time
-            time_string = time.strftime("%d/%m/%Y, %H:%M:%S", named_tuple)
+            #named_tuple = time.localtime() # get struct_time
+            #time_string = time.strftime("%d/%m/%Y, %H:%M:%S", named_tuple)
+
+            tz = timezone(timedelta(hours = 7))
+
+            # Create a date object with given timezone
+            time_string = datetime.now(tz=tz)
+            print(time_string.strftime("%d/%m/%Y, %X"))
 
             userid = profile.user_id
             displayname = profile.display_name

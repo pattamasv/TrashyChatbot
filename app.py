@@ -237,14 +237,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
             date = datetime.now(tz=tz)
             time_string = date.strftime("%d/%m/%Y, %X")
 
-            userid = profile.user_id
-            displayname = profile.display_name
-            pictureurl = profile.picture_url
-            timestamp = time_string
-                    
-            u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=reply_message, timestamp=timestamp)
-            db.session.add(u)
-            db.session.commit()
+            
 
             if reply_message == 'glass':
                 trashtype = 'แก้ว'
@@ -270,6 +263,15 @@ def handle_message(event: MessageEvent)-> None : # echo function
             else:
                 #trashtype = 'อื่นๆ'
                 pass
+
+            userid = profile.user_id
+            displayname = profile.display_name
+            pictureurl = profile.picture_url
+            timestamp = time_string
+                    
+            u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+            db.session.add(u)
+            db.session.commit()
 
             if trashtype == 'แก้ว' or trashtype =='กระดาษ' or trashtype =='โลหะ' or trashtype =='พลาสติก':
                 bin = 'ถังขยะสีเหลือง'

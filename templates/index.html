@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Dashboard</title>
     <style>
          ul {
@@ -21,6 +23,7 @@
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
+            font-size: 24px;
         }
 
         li a:hover {
@@ -33,31 +36,32 @@
         table , th , td{
             border-bottom: 2px solid black;
             padding: 15px;
+            font-size: 20px;
         }
         </style>
 </head>
 
 <body>
     <ul>
-        <li><a class="active" href="#">Home</a></li>
+        <li><a class="active" href="#">Dashboard</a></li>
         <li><a href="/stat">Statistics</a></li>
     </ul>
 
-    <div style="padding:40px;background-color:#E6E6FA;height:1500px;">
+    <div style="padding:40px; background-color:#E6E6FA; height:1000px; overflow-y: scroll;">
         <div align = "center">
-            <h1><b>Trashy Dashboard</b></h1>
+            <h1 style = "font-size: 40px;"><b>Trashy Dashboard</b></h1>
 
             <table>
                 <thead>
                     <tr>
-                        <th>DisplayName</th>
-                        <th>Trash</th>
-                        <th>Date/Time</th>
+                        <th>ชื่อผู้ใช้</th>
+                        <th>ประเภทขยะ</th>
+                        <th>วัน/เวลา</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr>
+                    <tr align = "center">
                         <td>{{user.displayname}}</td>
                         <td>{{user.trash}}</td>
                         <td>{{user.timestamp}}</td>

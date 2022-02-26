@@ -234,8 +234,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
             tz = timezone(timedelta(hours = 7))
 
             # Create a date object with given timezone
-            time_string = datetime.now(tz=tz)
-            print(time_string.strftime("%d/%m/%Y, %X"))
+            date = datetime.now(tz=tz)
+            time_string = date.strftime("%d/%m/%Y, %X")
 
             userid = profile.user_id
             displayname = profile.display_name

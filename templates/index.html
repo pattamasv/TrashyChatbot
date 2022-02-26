@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+         ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
+
+        table {
+            border-collapse:collapse;
+        }
+        table , th , td{
+            border-bottom: 2px solid black;
+            padding: 15px;
+        }
+        </style>
+</head>
+
+<body>
+    <ul>
+        <li><a class="active" href="#">Home</a></li>
+        <li><a href="/stat">Statistics</a></li>
+    </ul>
+
+    <div style="padding:40px;background-color:#E6E6FA;height:1500px;">
+        <div align = "center">
+            <h1><b>Trashy Dashboard</b></h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>DisplayName</th>
+                        <th>Trash</th>
+                        <th>Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{user.displayname}}</td>
+                        <td>{{user.trash}}</td>
+                        <td>{{user.timestamp}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

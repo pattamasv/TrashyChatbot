@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Statistic</title>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
+
+        table {
+            border-collapse:collapse;
+        }
+        table , th , td{
+            border-bottom: 2px solid black;
+            padding: 15px;
+        }
+        </style>
+</head>
+
+
+<body>
+    <ul>
+        <li><a class="active" href="/">Home</a></li>
+        <li><a href="#">Statistics</a></li>
+    </ul>
+
+    <div style="padding:40px;background-color:#E6E6FA;height:1500px;">
+
+        <div align = "center">
+            <h1><b>Trashy Statistic</b></h1>
+
+            <table id="myTable">
+                <tbody>
+                    <tr>
+                        <th>ประเภทขยะ</th>
+                        <th>จำนวนรูป</th>
+                    </tr>
+                    <tr>
+                        <td>แก้ว</td>
+                        <td id="glass">{{glass}}</td>
+                    </tr>
+                    <tr>
+                        <td>กระดาษ</td>
+                        <td id="paper">{{paper}}</td>
+                    </tr>
+                    <tr>
+                        <td>โลหะ</td>
+                        <td id="metal">{{metal}}</td>
+                    </tr>
+                    <tr>
+                        <td>พลาสติก</td>
+                        <td id="plastic">{{plastic}}</td>
+                    </tr>
+                    <tr>
+                        <td>ขยะทั่วไป</td>
+                        <td id="trash">{{trash}}</td>
+                    </tr>
+                    <tr>
+                        <td>ขยะเปียก</td>
+                        <td id="waste">{{waste}}</td>
+                    </tr>
+                    <tr>
+                        <td>ขยะอันตราย</td>
+                        <td id="dangerous">{{dangerous}}</td>
+                    </tr>
+                </tbody>
+            </table>
+          
+        </div>
+    </div>
+    
+</body>
+
+</html>

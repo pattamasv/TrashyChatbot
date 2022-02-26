@@ -1,5 +1,7 @@
 from fastai.vision import *
 from flask import Flask, request, abort, render_template
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import *
@@ -14,13 +16,23 @@ import json,requests
 import geopy.distance as ps
 import pandas as pd
 import numpy as np
-import pickle
+from models import db,users
+import time
 
 path = './'
 learn = load_learner(path, 'export.pkl')
 print('model loaded!')
 
 app = Flask(__name__)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+db.init_app(app)
+#db = SQLAlchemy(app)
+
+@app.before_first_request
+def create_table():
+    db.create_all()
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -57,6 +69,29 @@ def callback():
     
     return 'OK'
 
+@app.route('/')
+def main():   
+    return render_template('index.html', users = users.query.order_by(desc(users.timestamp)).all())
+
+@app.route('/stat')
+def statistic():
+    user = users.query.all()
+    paper = users.query.filter_by(trash = 'paper').all()
+    glass = users.query.filter_by(trash = 'glass').all()
+    metal = users.query.filter_by(trash = 'metal').all()
+    plastic = users.query.filter_by(trash = 'plastic').all()
+    trash = users.query.filter_by(trash = 'trash').all()
+    waste = users.query.filter_by(trash = 'biological').all()
+    dangerous = users.query.filter_by(trash = 'dangerous').all()
+    lpaper = len(paper)
+    lglass = len(glass)
+    lmetal = len(metal)
+    lplastic = len(plastic)
+    ltrash = len(trash)
+    lwaste = len(waste)
+    ldangerous = len(dangerous)
+    return render_template('statistic.html', paper=lpaper, glass=lglass, metal=lmetal, plastic=lplastic, trash=ltrash, waste=lwaste, dangerous=ldangerous)
+
 @handler.add(PostbackEvent)
 def handle_post(event:PostbackEvent)-> None : # echo function 
       data  = event.postback.data
@@ -83,7 +118,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
         howtouse = ['Trashy Chatbot ทำอะไรได้บ้าง','ทำอะไรได้บ้าง','ทำไรได้บ้าง','ใช้ยังไง','ต้องทำยังไง','ขั้นตอนการใช้งาน','วิธีใช้','ขอวิธีใช้หน่อย','วิธีใช้งาน','ต้องทำอะไรบ้าง']
         end = ['ขอบคุณ','ขอบคุณค่ะ','ขอบคุณครับ','เอาไว้ก่อน','ยังไม่ต้องการขาย']
         yes = ['ต้องการขาย','พิกัดใกล้ฉัน','ต้องการสะสมแต้มหรือขาย']
-      
+        web = ['Dashboard', 'Statistic']
+
         if isinstance(event.message, TextMessage):
             for g in greeting:
                 if (g == event.message.text ):
@@ -97,6 +133,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))])        
                     break
 
@@ -112,6 +150,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))])      
                     break
 
@@ -126,6 +166,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))])      
                     break
 
@@ -133,6 +175,39 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 if (e == event.message.text ):
                     reply_message = 'Trashy Chatbot ยินดีให้บริการค่ะ ขอบคุณค่ะ'
                     line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=reply_message)])
+                    break
+
+            for w in web:
+                if (event.message.text == 'Dashboard' ):
+                    
+                    line_bot_api.reply_message(event.reply_token, [TextSendMessage(
+                            text='https://trashychatbot.herokuapp.com/',
+                            quick_reply=QuickReply(
+                                items=[
+                                    QuickReplyButton(action=MessageAction(label="วิธีใช้", text="ขั้นตอนการใช้งาน")),
+                                    QuickReplyButton(action=MessageAction(label="พิกัดใกล้ฉัน", text="พิกัดใกล้ฉัน")),
+                                    QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
+                                    QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
+                                    QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
+                                ]))])        
+                    break
+
+                elif (event.message.text == 'Statistic' ):
+                    
+                    line_bot_api.reply_message(event.reply_token, [TextSendMessage(
+                            text='https://trashychatbot.herokuapp.com/stat',
+                            quick_reply=QuickReply(
+                                items=[
+                                    QuickReplyButton(action=MessageAction(label="วิธีใช้", text="ขั้นตอนการใช้งาน")),
+                                    QuickReplyButton(action=MessageAction(label="พิกัดใกล้ฉัน", text="พิกัดใกล้ฉัน")),
+                                    QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
+                                    QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
+                                    QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
+                                ]))])        
                     break
 
         #Image
@@ -145,6 +220,20 @@ def handle_message(event: MessageEvent)-> None : # echo function
             reply_message = str(predicted_class)
             print(reply_message)
             print(str(outputs))
+
+            profile = line_bot_api.get_profile(event.source.user_id)
+
+            named_tuple = time.localtime() # get struct_time
+            time_string = time.strftime("%d/%m/%Y, %H:%M:%S", named_tuple)
+
+            userid = profile.user_id
+            displayname = profile.display_name
+            pictureurl = profile.picture_url
+            timestamp = time_string
+                    
+            u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=reply_message, timestamp=timestamp)
+            db.session.add(u)
+            db.session.commit()
 
             if reply_message == 'glass':
                 trashtype = 'แก้ว'
@@ -193,6 +282,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                     line_bot_api.reply_message(event.reply_token,res) 
 
@@ -213,6 +304,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                     line_bot_api.reply_message(event.reply_token,res) 
             elif trashtype == 'ขยะทั่วไป':
@@ -228,6 +321,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                 line_bot_api.reply_message(event.reply_token,res) 
             elif trashtype == 'ขยะอันตราย':
@@ -243,6 +338,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                 line_bot_api.reply_message(event.reply_token,res) 
             elif trashtype == 'ขยะเปียก':
@@ -258,6 +355,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                 line_bot_api.reply_message(event.reply_token,res) 
             else:
@@ -295,6 +394,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
                                     QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
+                                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
+                                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
             try:
                 line_bot_api.reply_message(event.reply_token, replyObj)

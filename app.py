@@ -1,7 +1,7 @@
 from fastai.vision import *
 from flask import Flask, request, abort, render_template
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc,create_engine
+from sqlalchemy import desc
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import *
@@ -27,8 +27,8 @@ print('model loaded!')
 app = Flask(__name__)
 app.config.from_object(Config)
 
-DB_URI = app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-engine = create_engine(DB_URI)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
 
 db.init_app(app)
 #db = SQLAlchemy(app)

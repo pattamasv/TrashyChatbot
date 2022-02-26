@@ -1,7 +1,7 @@
 from fastai.vision import *
 from flask import Flask, request, abort, render_template
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc
+from sqlalchemy import desc,create_engine
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import *
@@ -18,14 +18,17 @@ import pandas as pd
 import numpy as np
 from models import db,users
 import time
+from config import Config
 
 path = './'
 learn = load_learner(path, 'export.pkl')
 print('model loaded!')
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 DB_URI = app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+engine = create_engine(DB_URI)
 
 db.init_app(app)
 #db = SQLAlchemy(app)

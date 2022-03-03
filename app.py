@@ -224,8 +224,6 @@ def handle_message(event: MessageEvent)-> None : # echo function
             print(reply_message)
             print(str(outputs))
 
-            profile = line_bot_api.get_profile(event.source.user_id)
-
             #named_tuple = time.localtime() # get struct_time
             #time_string = time.strftime("%d/%m/%Y, %H:%M:%S", named_tuple)
 
@@ -262,14 +260,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 #trashtype = 'อื่นๆ'
                 pass
 
-            userid = profile.user_id
-            displayname = profile.display_name
-            pictureurl = profile.picture_url
-            timestamp = time_string
-                    
-            u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
-            db.session.add(u)
-            db.session.commit()
+            
 
             if trashtype == 'แก้ว' or trashtype =='กระดาษ' or trashtype =='โลหะ' or trashtype =='พลาสติก':
                 bin = 'ถังขยะสีเหลือง'
@@ -297,6 +288,15 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                     line_bot_api.reply_message(event.reply_token,res) 
+                    profile = line_bot_api.get_profile(event.source.user_id)
+                    userid = profile.user_id
+                    displayname = profile.display_name
+                    pictureurl = profile.picture_url
+                    timestamp = time_string
+                            
+                    u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+                    db.session.add(u)
+                    db.session.commit()
 
                 else: 
                     reply1 = 'ประเภทขยะของคุณคือ %s ควรทิ้งใน%s'%(trashtype,bin)
@@ -318,7 +318,17 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
                                     QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
-                    line_bot_api.reply_message(event.reply_token,res) 
+                    line_bot_api.reply_message(event.reply_token,res)
+                    profile = line_bot_api.get_profile(event.source.user_id)
+                    userid = profile.user_id
+                    displayname = profile.display_name
+                    pictureurl = profile.picture_url
+                    timestamp = time_string
+                            
+                    u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+                    db.session.add(u)
+                    db.session.commit() 
+
             elif trashtype == 'ขยะทั่วไป':
                 bin = 'ถังขยะสีน้ำเงิน'
                 url = 'https://www.img.in.th/images/d0edc27448de8591252bfeee4392ccd2.jpg'
@@ -336,6 +346,16 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                 line_bot_api.reply_message(event.reply_token,res) 
+                profile = line_bot_api.get_profile(event.source.user_id)
+                userid = profile.user_id
+                displayname = profile.display_name
+                pictureurl = profile.picture_url
+                timestamp = time_string
+                        
+                u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+                db.session.add(u)
+                db.session.commit() 
+
             elif trashtype == 'ขยะอันตราย':
                 bin = 'ถังขยะสีแดง'
                 url = 'https://www.img.in.th/images/4fe2a116e8323985bd4a86ace49ddd07.jpg'
@@ -352,7 +372,17 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
                                     QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
-                line_bot_api.reply_message(event.reply_token,res) 
+                line_bot_api.reply_message(event.reply_token,res)
+                profile = line_bot_api.get_profile(event.source.user_id)
+                userid = profile.user_id
+                displayname = profile.display_name
+                pictureurl = profile.picture_url
+                timestamp = time_string
+                            
+                u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+                db.session.add(u)
+                db.session.commit()  
+
             elif trashtype == 'ขยะเปียก':
                 bin = 'ถังขยะสีเขียว'
                 url = 'https://www.img.in.th/images/bc79d41e1beeab5cdb0c88f0f6a24678.jpg'
@@ -370,6 +400,16 @@ def handle_message(event: MessageEvent)-> None : # echo function
                                     QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic"))
                                 ]))]
                 line_bot_api.reply_message(event.reply_token,res) 
+                profile = line_bot_api.get_profile(event.source.user_id)
+                userid = profile.user_id
+                displayname = profile.display_name
+                pictureurl = profile.picture_url
+                timestamp = time_string
+                            
+                u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=trashtype, timestamp=timestamp)
+                db.session.add(u)
+                db.session.commit() 
+                
             else:
                 pass
 

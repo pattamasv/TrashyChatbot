@@ -219,7 +219,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
         if isinstance(event.message, ImageMessage):
             image = download_and_resize_image(event,PIXEL_RESIZE_TO)
             data = open_image(image)
-            data = data.resize((3,384,512))        
+            #data = data.resize((3,384,512))        
             predicted_class, predicted_index, outputs = learn.predict(data)
             
             reply_message = str(predicted_class)
@@ -435,7 +435,7 @@ def download_and_resize_image(event: MessageEvent, PIXEL_RESIZE_TO) -> bytes:
         img.thumbnail((PIXEL_RESIZE_TO, PIXEL_RESIZE_TO))
         img.save(dst_image, format=img.format)
 
-    return dst_image
+    return src_image
 
 #ResponseLocationFromExcel
 def handle_location(lat,lng,cdat,topK):

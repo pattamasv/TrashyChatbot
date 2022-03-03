@@ -10,6 +10,4 @@ pandas==1.1.5
 Pillow==8.4.0
 PyYAML==6.0
 SQLAlchemy==1.4.31
-torch==1.10.2
-torchvision==0.11.3
 xlrd==1.2.0

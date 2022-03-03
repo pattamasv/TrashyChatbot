@@ -8,7 +8,6 @@ from linebot.models import *
 from linebot.models.responses import Content
 from linebot.models.messages import*
 from linebot.models.template import *
-from pyngrok import conf, ngrok
 from PIL import Image, ImageFile
 from geopy.distance import *
 import io
@@ -17,7 +16,6 @@ import geopy.distance as ps
 import pandas as pd
 import numpy as np
 from models import db,users
-import time
 from config import Config
 from datetime import datetime, timezone, timedelta
 

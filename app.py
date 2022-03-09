@@ -1,7 +1,7 @@
 from fastai.vision import *
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError, LineBotApiError
+from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 from linebot.models.responses import Content
 from linebot.models.messages import*
@@ -9,28 +9,16 @@ from linebot.models.template import *
 from PIL import Image, ImageFile
 from geopy.distance import *
 import io
-import json,requests
+import json
 import geopy.distance as ps
 import pandas as pd
-import numpy as np
-#from models import db,users
-#from config import Config
 from datetime import datetime, timezone, timedelta
 
 path = './'
 learn = load_learner(path, 'export.pkl')
-#print('model loaded!')
+print('model loaded!')
 
 app = Flask(__name__)
-
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-
-#db.init_app(app)
-#db = SQLAlchemy(app)
-
-#@app.before_first_request
-#def create_table():
- #   db.create_all()
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -181,17 +169,6 @@ def handle_message(event: MessageEvent)-> None : # echo function
             else:
                 #trashtype = 'อื่นๆ'
                 pass
-            
-           
-                    
-            tz = timezone(timedelta(hours = 7))
-
-            # Create a date object with given timezone
-            date = datetime.now(tz=tz)
-            time_string = date.strftime("%d/%m/%Y, %X")
-
-
-           
 
             if trashtype == 'แก้ว' or trashtype =='กระดาษ' or trashtype =='โลหะ' or trashtype =='พลาสติก':
                 bin = 'ถังขยะสีเหลือง'
@@ -210,9 +187,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                         ])
 
                     reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url), TextSendMessage(text=reply_plastic) ,TemplateSendMessage(alt_text='Confirm alt text', template=confirm_template,quick_reply = qr)]
-                    line_bot_api.reply_message(event.reply_token, reply_message) 
-                    
-                  
+                    line_bot_api.reply_message(event.reply_token, reply_message)              
 
                 else: 
                     confirm_template = ConfirmTemplate(text=predictprice+' ' +'ต้องการขายไหม?', 
@@ -224,8 +199,6 @@ def handle_message(event: MessageEvent)-> None : # echo function
                     reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url), TextSendMessage(text=reply_notplastic) ,TemplateSendMessage(alt_text='Confirm alt text', template=confirm_template,quick_reply = qr)]
                     line_bot_api.reply_message(event.reply_token, reply_message) 
                 
-                    
-
             elif trashtype == 'ขยะทั่วไป':
                 bin = 'ถังขยะสีน้ำเงิน'
                 url = 'https://www.img.in.th/images/d0edc27448de8591252bfeee4392ccd2.jpg'
@@ -233,9 +206,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 reply_type = 'ประเภทขยะของคุณคือ %s ควรทิ้งใน%s'%(trashtype,bin)
 
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
-                line_bot_api.reply_message(event.reply_token, reply_message) 
-                
-              
+                line_bot_api.reply_message(event.reply_token, reply_message)          
 
             elif trashtype == 'ขยะอันตราย':
                 bin = 'ถังขยะสีแดง'
@@ -245,9 +216,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
 
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
                 line_bot_api.reply_message(event.reply_token, reply_message) 
-                
-                
-
+                               
             elif trashtype == 'ขยะเปียก':
                 bin = 'ถังขยะสีเขียว'
                 url = 'https://www.img.in.th/images/bc79d41e1beeab5cdb0c88f0f6a24678.jpg'
@@ -255,9 +224,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 reply_type = 'ประเภทขยะของคุณคือ %s ควรทิ้งใน%s'%(trashtype,bin)
 
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
-                line_bot_api.reply_message(event.reply_token, reply_message) 
-                
-               
+                line_bot_api.reply_message(event.reply_token, reply_message)             
 
             else:
                 pass
@@ -351,8 +318,6 @@ def pricecal(price,trashtype):
     data = price['%s'%trashtype].values
     price = (data[0]-data[6])/data[6]
     return price
-  
-
 
 if __name__ == '__main__':
     app.run()

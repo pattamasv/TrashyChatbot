@@ -15,8 +15,8 @@ import json,requests
 import geopy.distance as ps
 import pandas as pd
 import numpy as np
-from models import db,users
-from config import Config
+#from models import db,users
+#from config import Config
 from datetime import datetime, timezone, timedelta
 
 path = './'
@@ -25,14 +25,14 @@ learn = load_learner(path, 'export.pkl')
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
-db.init_app(app)
+#db.init_app(app)
 #db = SQLAlchemy(app)
 
-@app.before_first_request
-def create_table():
-    db.create_all()
+#@app.before_first_request
+#def create_table():
+ #   db.create_all()
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -78,22 +78,6 @@ def callback():
     
     return 'OK'
 
-@app.route('/')
-def main():   
-    return render_template('index.html', users = users.query.order_by(desc(users.timestamp)).all())
-
-@app.route('/stat')
-def statistic():
-    user = len(users.query.all())
-    paper = len(users.query.filter_by(trash = 'paper').all())
-    glass = len(users.query.filter_by(trash = 'glass').all())
-    metal = len(users.query.filter_by(trash = 'metal').all())
-    plastic = len(users.query.filter_by(trash = 'plastic').all())
-    trash = len(users.query.filter_by(trash = 'trash').all())
-    waste = len(users.query.filter_by(trash = 'biological').all())
-    dangerous = len(users.query.filter_by(trash = 'dangerous').all())
-    
-    return render_template('statistic.html', paper=paper, glass=glass, metal=metal, plastic=plastic, trash=trash, waste=waste, dangerous=dangerous)
 
 @handler.add(PostbackEvent)
 def handle_post(event:PostbackEvent)-> None : # echo function 
@@ -200,7 +184,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 #trashtype = 'อื่นๆ'
                 pass
             
-            profile = line_bot_api.get_profile(event.source.user_id)
+           
                     
             tz = timezone(timedelta(hours = 7))
 
@@ -208,12 +192,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
             date = datetime.now(tz=tz)
             time_string = date.strftime("%d/%m/%Y, %X")
 
-            userid = profile.user_id
-            displayname = profile.display_name
-            pictureurl = profile.picture_url
-            timestamp = time_string
 
-            u = users(userid=userid, displayname=displayname, pictureurl=pictureurl, trash=res, timestamp=timestamp)
+           
 
             if trashtype == 'แก้ว' or trashtype =='กระดาษ' or trashtype =='โลหะ' or trashtype =='พลาสติก':
                 bin = 'ถังขยะสีเหลือง'
@@ -234,8 +214,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                     reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url), TextSendMessage(text=reply_plastic) ,TemplateSendMessage(alt_text='Confirm alt text', template=confirm_template,quick_reply = qr)]
                     line_bot_api.reply_message(event.reply_token, reply_message) 
                     
-                    db.session.add(u)
-                    db.session.commit()
+                  
 
                 else: 
                     confirm_template = ConfirmTemplate(text=predictprice+' ' +'ต้องการขายไหม?', 
@@ -247,8 +226,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                     reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url), TextSendMessage(text=reply_notplastic) ,TemplateSendMessage(alt_text='Confirm alt text', template=confirm_template,quick_reply = qr)]
                     line_bot_api.reply_message(event.reply_token, reply_message) 
                 
-                    db.session.add(u)
-                    db.session.commit()
+                    
 
             elif trashtype == 'ขยะทั่วไป':
                 bin = 'ถังขยะสีน้ำเงิน'
@@ -259,8 +237,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
                 line_bot_api.reply_message(event.reply_token, reply_message) 
                 
-                db.session.add(u)
-                db.session.commit()
+              
 
             elif trashtype == 'ขยะอันตราย':
                 bin = 'ถังขยะสีแดง'
@@ -271,8 +248,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
                 line_bot_api.reply_message(event.reply_token, reply_message) 
                 
-                db.session.add(u)
-                db.session.commit()
+                
 
             elif trashtype == 'ขยะเปียก':
                 bin = 'ถังขยะสีเขียว'
@@ -283,8 +259,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 reply_message = [TextSendMessage(text=reply_type), ImageSendMessage(url, url, quick_reply = qr)]
                 line_bot_api.reply_message(event.reply_token, reply_message) 
                 
-                db.session.add(u)
-                db.session.commit()
+               
 
             else:
                 pass

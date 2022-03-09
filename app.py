@@ -1,7 +1,5 @@
 from fastai.vision import *
 from flask import Flask, request, abort, render_template
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import desc
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import *

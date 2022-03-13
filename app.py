@@ -40,7 +40,7 @@ channelSecret = "bf23c31dc5d926e28c188d0c3018078e"
 
 CONFIDENCE_THRESHOLD = 70
 PIXEL_RESIZE_TO_h = 384
-PIXEL_RESIZE_TO_w = 512
+PIXEL_RESIZE_TO_w = 384
 
 line_bot_api = LineBotApi(channelAccessToken)
 handler = WebhookHandler(channelSecret)
@@ -164,7 +164,7 @@ def handle_message(event: MessageEvent)-> None : # echo function
         if isinstance(event.message, ImageMessage):
             image = download_and_resize_image(event,PIXEL_RESIZE_TO_w, PIXEL_RESIZE_TO_h)
             data = open_image(image)
-            data = data.resize((3,384,512))
+            #data = data.resize((3,384,512))
             #data = PILImage(PILImage.create(TEST_IMAGE).resize((600,400)))
             print(data)
            

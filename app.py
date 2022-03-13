@@ -327,14 +327,14 @@ def download_and_resize_image(event: MessageEvent, PIXEL_RESIZE_TO_w, PIXEL_RESI
 
     with Image.open(src_image) as img:
         width, height = img.size
-        #if width < PIXEL_RESIZE_TO_w and height < PIXEL_RESIZE_TO_h:
-         #   return src_image.getvalue()
+        if width < PIXEL_RESIZE_TO_w and height < PIXEL_RESIZE_TO_h:
+           return src_image.getvalue()
 
         dst_image = io.BytesIO()
         img.thumbnail((PIXEL_RESIZE_TO_w, PIXEL_RESIZE_TO_h))
         img.save(dst_image, format=img.format)
 
-    return src_image
+    return dst_image
 
 #ResponseLocationFromExcel
 def handle_location(lat,lng,cdat,topK):

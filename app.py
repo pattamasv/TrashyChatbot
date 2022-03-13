@@ -164,9 +164,9 @@ def handle_message(event: MessageEvent)-> None : # echo function
         if isinstance(event.message, ImageMessage):
             image = download_and_resize_image(event,PIXEL_RESIZE_TO_w, PIXEL_RESIZE_TO_h)
             data = open_image(image)
-            #data1 = data.resize((3,384,512))
+            data = data.resize((3,384,512))
             #data = PILImage(PILImage.create(TEST_IMAGE).resize((600,400)))
-            #print(data)
+            print(data)
            
             predicted_class, predicted_index, outputs = learn.predict(data)
             

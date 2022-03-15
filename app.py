@@ -330,6 +330,16 @@ def download_and_resize_image(event: MessageEvent, PIXEL_RESIZE_TO_w, PIXEL_RESI
         if width <= 512 and height <= 384:
            return src_image
 
+        elif width >= 1478 and height >= 960:
+            dst_image = io.BytesIO()
+            m_thumb = img.crop(((width - 1478) // 2,
+                                (height - 1108) // 2,
+                                (width + 1478) // 2,
+                                (height + 1108) // 2))
+            m_thumb.thumbnail((512, 384))
+            m_thumb.save(dst_image, format=img.format)
+            return dst_image
+
         dst_image = io.BytesIO()
         m_thumb = img.crop(((width - 1108) // 2,
                              (height - 1478) // 2,

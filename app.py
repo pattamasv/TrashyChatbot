@@ -327,12 +327,16 @@ def download_and_resize_image(event: MessageEvent, PIXEL_RESIZE_TO_w, PIXEL_RESI
 
     with Image.open(src_image) as img:
         width, height = img.size
-        if width < PIXEL_RESIZE_TO_w and height < PIXEL_RESIZE_TO_h:
-           return src_image.getvalue()
+        if width <= 512 and height <= 384:
+           return src_image
 
         dst_image = io.BytesIO()
-        img.thumbnail((PIXEL_RESIZE_TO_w, PIXEL_RESIZE_TO_h))
-        img.save(dst_image, format=img.format)
+        m_thumb = img.crop(((width - 1108) // 2,
+                             (height - 1478) // 2,
+                             (width + 1108) // 2,
+                             (height + 1478) // 2))
+        m_thumb.thumbnail((384, 512))
+        m_thumb.save(dst_image, format=img.format)
 
     return dst_image
 

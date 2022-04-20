@@ -40,9 +40,7 @@ qr = QuickReply(items=[QuickReplyButton(action=MessageAction(label="วิธี
                     QuickReplyButton(action=MessageAction(label="พิกัดใกล้ฉัน", text="พิกัดใกล้ฉัน")),
                     QuickReplyButton( action=CameraAction(label="ถ่ายรูปขยะ")),
                     QuickReplyButton( action=CameraRollAction(label="เลือกรูปขยะ")),
-                    QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง")),
-                    QuickReplyButton(action=MessageAction(label="Dashboard", text="Dashboard")),
-                    QuickReplyButton(action=MessageAction(label="Statistic", text="Statistic")) ])
+                    QuickReplyButton(action=LocationAction(label="ส่งตำแหน่ง"))])
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -88,7 +86,6 @@ def handle_message(event: MessageEvent)-> None : # echo function
         howtouse = ['Trashy Chatbot ทำอะไรได้บ้าง','ทำอะไรได้บ้าง','ทำไรได้บ้าง','ใช้ยังไง','ต้องทำยังไง','ขั้นตอนการใช้งาน','วิธีใช้','ขอวิธีใช้หน่อย','วิธีใช้งาน','ต้องทำอะไรบ้าง']
         end = ['ขอบคุณ','ขอบคุณค่ะ','ขอบคุณครับ','เอาไว้ก่อน','ยังไม่ต้องการขาย']
         yes = ['ต้องการขาย','พิกัดใกล้ฉัน','ต้องการสะสมแต้มหรือขาย']
-        web = ['Dashboard', 'Statistic']
       
         if isinstance(event.message, TextMessage):
             for g in greeting:
@@ -99,8 +96,8 @@ def handle_message(event: MessageEvent)-> None : # echo function
 
             for h in howtouse:
                 if (h == event.message.text ):
-                    t1 = '1.ถ่ายรูปขยะที่ต้องการทิ้ง ส่งไปยังแทรชชี่แชทบอท (โดยพยายามถ่ายให้พื้นหลังรูปขยะเป็นสีขาว) เพื่อให้แทรชชี่แนะนำการจัดการกับขยะประเภทนั้นๆ'
-                    t2 = '2.ส่งตำแหน่งที่ตั้งปัจจุบันของผู้ใช้ไปยังแทรชชี่แชทบอท เพื่อให้แทรชชี่แนะนำสถานที่รับซื้อขยะรีไซเคิลที่อยู่ใกล้กับผู้ใช้'
+                    t1 = '1.ถ่ายรูปขยะที่ต้องการทิ้ง ส่งไปยังแทรชชีแชทบอท (โดยพยายามถ่ายให้พื้นหลังรูปขยะเป็นสีขาว) เพื่อให้แทรชชีแนะนำการจัดการกับขยะประเภทนั้นๆ'
+                    t2 = '2.ส่งตำแหน่งที่ตั้งปัจจุบันของผู้ใช้ไปยังแทรชชีแชทบอท เพื่อให้แทรชชีแนะนำสถานที่รับซื้อขยะรีไซเคิลที่อยู่ใกล้กับผู้ใช้'
                     reply_message = t1+'\n'+t2
                     line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=reply_message, quick_reply=qr)])      
                     break
@@ -116,17 +113,6 @@ def handle_message(event: MessageEvent)-> None : # echo function
                 if (e == event.message.text ):
                     reply_message = 'Trashy Chatbot ยินดีให้บริการค่ะ ขอบคุณค่ะ'
                     line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=reply_message)])
-                    break
-            
-            for w in web:
-                if (event.message.text == 'Dashboard' ):
-                    reply_message = 'https://trashychatbot.herokuapp.com/'
-                    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=reply_message, quick_reply=qr)])       
-                    break
-
-                elif (event.message.text == 'Statistic' ):
-                    reply_message = 'https://trashychatbot.herokuapp.com/stat'
-                    line_bot_api.reply_message(event.reply_token, [TextSendMessage(text=reply_message, quick_reply=qr)])        
                     break
 
         #Image
